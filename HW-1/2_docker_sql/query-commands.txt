@@ -1,0 +1,54 @@
+3) How many taxi trips were totally made on January 15?
+   Tip: started and finished on 2019-01-15.
+select 
+	cast(lpep_pickup_datetime as DATE) as "pickup_date", 
+	cast(lpep_dropoff_datetime as DATE) as "dropoff_date",
+	count(*)
+from 
+	green_taxi_data
+where 
+	"pickup_date"='2019-01-15' and
+	"dropoff_date"='2019-01-15'
+group by 
+	"pickup_date","dropoff_date";
+	
+4) Which was the day with the largest trip distance Use the pick up time for your calculations?
+select 
+	cast(lpep_pickup_datetime as DATE) as date, max(trip_distance) 
+from 
+	green_taxi_data
+group by 
+	date
+order by max desc;
+
+5) In 2019-01-01 how many trips had 2 and 3 passengers?
+select *
+from  
+	(select 
+		passenger_count, count(1) 
+	from 
+		green_taxi_data
+	where 
+		cast(lpep_pickup_datetime as DATE)='2019-01-01'
+	group by 
+		passenger_count) a
+where 
+	passenger_count between 2 and 3;
+	
+6) For the passengers picked up in the Astoria Zone which was the drop off zone that had the largest tip? We want the name of the zone, not the id.
+select 
+	zpu."Zone" as pickup_loc,
+	zdo."Zone" as dropoff_loc,
+	max(g."tip_amount") as max_tip
+from 
+	green_taxi_data g join zones zpu
+		 on g."PULocationID" = zpu."LocationID"
+		join zones zdo
+		 on g."DOLocationID" = zdo."LocationID"
+where 
+	zpu."Zone" = 'Astoria'
+group by 
+	pickup_loc, dropoff_loc
+order by 
+	max_tip desc
+limit 1;

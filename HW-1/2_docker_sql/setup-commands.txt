@@ -1,0 +1,26 @@
+### HW-1
+# green taxi ingestion
+docker run -it \
+    --name ingest_postgres_green-taxi \
+    --network=pg-network \
+    taxi_ingest:v1 \
+        --user=root \
+        --pswd=root \
+        --host=postgres13 \
+        --port=5432 \
+        --db='ny_taxi' \
+        --table_name='green_taxi_data' \
+        --url="https://github.com/DataTalksClub/nyc-tlc-data/releases/download/green/green_tripdata_2019-01.csv.gz"
+
+# zones ingestion
+docker run -it \
+    --name ingest_postgres_zones \
+    --network=pg-network \
+    taxi_ingest:v1 \
+        --user=root \
+        --pswd=root \
+        --host=postgres13 \
+        --port=5432 \
+        --db='ny_taxi' \
+        --table_name='zones' \
+        --url="https://s3.amazonaws.com/nyc-tlc/misc/taxi+_zone_lookup.csv"
